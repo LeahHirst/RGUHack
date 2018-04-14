@@ -46,6 +46,13 @@
                 return `<div class="card card-rtl"><div class="card-image" style="background-image:url('${author.photo}');"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
+            socket.on('online users', (data) => {
+                $("#nusers").text(data.users.length);
+                data.users.forEach(user => {
+                    $("#online-users").append(`<div class="icon" style="background-image: url('${user.photo}');"></div>`) 
+                });
+            });
+
             socket.on('interim update', (data) => {
                 // Try to find the associated div
                 var el = document.getElementById('message-' + data.id);
@@ -90,9 +97,13 @@
                 el.scrollIntoView();
             });
 
-            socket.on('user join', (data) => {
-                $('#output').append('<p class="centered-text">' + da + '</p>');
+            socket.on('user joined', (data) => {
+                $('#output').append('<p class="centered-text">' + data.user.fullName + ' has joined the room</p>');
             });
+
+            socket.on('user left', (data) => {
+                $('#output').append('<p class="centered-text">' + data.user.fullName + ' has left the room</p>');
+            })
         </script>
 </body>
 </html>
