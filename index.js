@@ -54,7 +54,8 @@ io.on('connection', function(socket){
     if(!users[socket.id]) {
       users[socket.id] = { name: id.name, photo: id.photo, fullName: id.fullName };
     }
-    io.to(id.name).emit('user joined', {user: users[socket.id], users: users});
+    socket.emit('online users', { users: users });
+    io.to(id.name).emit('user joined', {user: users[socket.id]});
   });
   socket.on('interim', obj => {
     if(!messageID[socket.id]) {
