@@ -30,7 +30,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', function(req, res){
-  res.send(req.user || "No user");
+  if (!req.user) {
+    res.redirect('/auth/google');
+  } else {
+    res.send(req.user);
+  }
 });
 
 app.get('/:id', (req, res) => {
@@ -69,7 +73,7 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
     clientID: "998277289939-80n1rq3l9uhjr643ugutnedj2ln01st6.apps.googleusercontent.com",
     clientSecret: "auiz-QSfxKC6I6LyJ_VkTzR0",
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "https://gohack.org/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
     return cb(profile);
