@@ -72,8 +72,13 @@
 
                 if (el == null) {
                     // Create the element
-                    $('#output').append(getMessageTemplate(data.id, data.string, data.user));
-                    el = document.getElementById('message-' + data.id);
+                    if (data.target == socket.id) {
+                        $('#output').append(getUserMessageTemplate(data.id, data.string, data.user));
+                        el = document.getElementById('message-' + data.id);
+                    } else {
+                        $('#output').append(getMessageTemplate(data.id, data.string, data.user));
+                        el = document.getElementById('message-' + data.id);
+                    }
                 } else {
                     $('#message-' + data.id).text(data.string);
                 }
