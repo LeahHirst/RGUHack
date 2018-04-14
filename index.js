@@ -49,7 +49,7 @@ io.on('connection', function(socket){
   socket.on('join room', function(id){
     socket.join(id.roomId);
     if(!users[socket.id]) {
-      users[socket.id] = { name: id.name, photo: id.photo };
+      users[socket.id] = { name: id.name, photo: id.photo, fullName: id.fullName };
     }
     io.to(id.name).emit('user joined', {user: users[socket.id]});
   });
