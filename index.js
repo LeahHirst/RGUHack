@@ -15,6 +15,9 @@ var messageID = {};
 var users = {};
 var counter = 0;
 var gDataUser = {};
+var keywords = {
+	"amazing" : '<iframe src="https://giphy.com/embed/Fkmgse8OMKn9C" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/amazed-Fkmgse8OMKn9C">via GIPHY</a></p>'
+};
 
 passport.serializeUser(function(user, done) {
 	done(null, user.id);
@@ -54,7 +57,7 @@ io.on('connection', function(socket){
     if(!users[socket.id]) {
       users[socket.id] = { name: id.name, photo: id.photo };
     }
-    io.to(id.name).emit('user joined', {user: users[socket.id]});
+    io.to(id.name).emit('user joined', {user: users[socket.id], users: users});
   });
   socket.on('interim', obj => {
     if(!messageID[socket.id]) {
@@ -64,8 +67,12 @@ io.on('connection', function(socket){
     io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
   });
   socket.on('final', obj => {
+		var msg = obj;
+		if(keywords[obj]) {
+			msg = keywords[obj];
+		}
     var roomID = Object.keys(socket.rooms)[1];
-    io.to(roomID).emit('final update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
     messageID[socket.id] = undefined;
   });
 	socket.on('disconnect', () => {
