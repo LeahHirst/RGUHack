@@ -152,7 +152,7 @@ body {
 .go-btn {
     display: inline-block;
     width: 67px;
-    height: 67px;
+    height: 58px;
     border: none;
     background-color: #1d88e5;
     color: #fff;
@@ -160,4 +160,5 @@ body {
     border-bottom-right-radius: 20px;
     float: right;
     font-size: 16px;
+    padding: 0;
 }
