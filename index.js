@@ -75,10 +75,12 @@ io.on('connection', function(socket){
     messageID[socket.id] = undefined;
   });
 	socket.on('disconnect', () => {
-    var roomID = users[socket.id].room;
-    users[socket.id] = null;
-    
-		io.to(roomID).emit('user left', {user: users[socket.id]});
+    if (users[socket.id] != null) {
+      var roomID = users[socket.id].room;
+      users[socket.id] = null;
+      
+      io.to(roomID).emit('user left', {user: users[socket.id]});
+    }
 	});
 });
 
