@@ -5,8 +5,6 @@ const io = require('socket.io')(http);
 
 app.use(express.static("public"));
 
-app.listen(3000, () => { console.log("Listening on 3000"); });
-
 app.get('/', function(req, res){
 
 });
@@ -14,6 +12,10 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
   console.log('a user connected');
 });
+
+http.listen(3000, () => {
+    console.log("listening on 3000");
+})
 
 
 // var buffer = [];
