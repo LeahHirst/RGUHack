@@ -146,6 +146,7 @@ body {
     max-width: calc(100% - 107px);
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
+    border: none;
 }
 
 .go-btn {
@@ -159,5 +160,4 @@ body {
     border-bottom-right-radius: 20px;
     float: right;
     font-size: 16px;
-    height: 27px;
 }
