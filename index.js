@@ -65,7 +65,8 @@ io.on('connection', function(socket){
     io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
   });
   socket.on('final', obj => {
-		var msg = obj;
+    var msg = obj;
+    obj = obj.trim();
 		if(keywords[obj]) {
 			msg = keywords[obj];
 		}
