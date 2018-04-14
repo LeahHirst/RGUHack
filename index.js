@@ -3,20 +3,40 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const passport = require('passport');
+const ejs = require('ejs');
+const session = require('express-session');
+const cookieParser = require('cookie-parser')
 
 var messageID = {};
 var users = {};
 var counter = 0;
+var gDataUser = {};
+
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+	done(null, gDataUser[id]);
+});
 
 app.use(express.static("public"));
+app.set('view engine', 'ejs');
+app.use(session({ secret: "cows." }));
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', function(req, res){
-
+  res.send(req.user || "No user");
 });
 
 app.get('/:id', (req, res) => {
-  var id = req.params;
-  
+  if (!req.user) {
+    res.redirect('/auth/google'); 
+  } else {
+    res.render('room', { room: req.params.id, profile: req.user });
+  }
 })
 
 io.on('connection', function(socket){
@@ -24,7 +44,7 @@ io.on('connection', function(socket){
   socket.on('join room', function(id){
     socket.join(id.roomId);
     if(!users[socket.id]) {
-      users[socket.id] = { name: id.name };
+      users[socket.id] = { name: id.name, photo: id.photo };
     }
     io.to(id).emit('room msg', {msg: 'Welcome to the room'});
   });
@@ -50,10 +70,6 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    /*User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });*/
-
     return cb(profile);
   }
 ));
@@ -61,13 +77,21 @@ passport.use(new GoogleStrategy({
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login', successRedirect: '' }));
+  app.get('/auth/google/callback',
+  passport.authenticate('google'), // complete the authenticate using the google strategy
+  (profile, req, res, next) => { // custom error handler to catch any errors, such as TokenError
+    gDataUser[profile.id] = profile;
+    req.login(profile, next);
+  },
+  (req, res) => { // On success, redirect back to '/'
+    res.redirect('/');
+  }
+);
 
 if (process.env.PRODUCTION == 1) {
   const opts = {
-		key: fs.readFileSync("/etc/letsencrypt/live/ahirst.com/privkey.pem"),
-		cert: fs.readFileSync("/etc/letsencrypt/live/ahirst.com/fullchain.pem")
+		key: fs.readFileSync("/etc/letsencrypt/live/gohack.org/privkey.pem"),
+		cert: fs.readFileSync("/etc/letsencrypt/live/gohack.org/fullchain.pem")
 	};
 
 	// Set the app to listen on port 80

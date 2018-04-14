@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,300,400" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <title>transcri.me</title>
+    <title>transcri.me | #<%= room %></title>
 </head>
 <body>
         <div class="content">
@@ -26,18 +26,20 @@
         <script>
             var socket = io();
 
-            var roomName = location.pathname.slice(1);
+            var roomName = "<%= room %>";
+            var name = "<%= profile.name.givenName %>";
+            var photo = "<%= profile.photos[0].value %>";
 
-            socket.emit('join room', { name: "Adam", roomId: roomName })
+            socket.emit('join room', { name: "Adam", photo: photo, roomId: roomName })
 
             startTranscribing(socket);
 
             function getMessageTemplate(id, message, author) {
-                return `<div class="card"><div class="card-image"></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+                return `<div class="card"><div class="card-image" style="background-image:url('${author.photo}');"></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
             function getUserMessageTemplate(id, message, author) {
-                return `<div class="card card-rtl"><div class="card-image"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+                return `<div class="card card-rtl"><div class="card-image" style="background-image:url('${author.photo}');"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
             socket.on('interim update', (data) => {
