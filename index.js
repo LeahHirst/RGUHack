@@ -1,5 +1,3 @@
-import { EIO } from 'constants';
-
 const app = require('express')();
 
 const io = require('socket.io');
