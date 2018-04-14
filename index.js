@@ -98,7 +98,7 @@ app.get('/auth/google',
     if (!req.session.redirectToRoom) {
       res.redirect('/testroom');
     } else {
-      res.redirect(req.session.redirectToRoom);
+      res.redirect('/' + req.session.redirectToRoom);
     }
     
   }
