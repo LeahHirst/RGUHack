@@ -40,11 +40,10 @@ app.get('/', function(req, res){
 
 app.get('/:id', (req, res) => {
   if (!req.user) {
-    req.params.id = req.params.id.toLowerCase();
     req.session.redirectToRoom = req.params.id;
     res.redirect('/auth/google');
   } else {
-    res.render('room', { room: req.params.id, profile: req.user });
+    res.render('room', { room: req.params.id.toLowerCase(), profile: req.user });
   }
 })
 
