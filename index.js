@@ -21,10 +21,8 @@ io.on('connection', function(socket){
       users[socket.id] = { name: id.name };
     }
     io.to(id).emit('room msg', {msg: 'Welcome to the room'});
-    console.log('Socket connected to room ' + id.roomId);
   });
   socket.on('interim', obj => {
-    console.log('Emitting interim: ' + obj);
     if(!messageID[socket.id]) {
       messageID[socket.id] = counter++;
     }
@@ -39,20 +37,25 @@ io.on('connection', function(socket){
 });
 
 
+if (process.env.PRODUCTION == 1) {
+  const opts = {
+		key: fs.readFileSync("/etc/letsencrypt/live/ahirst.com/privkey.pem"),
+		cert: fs.readFileSync("/etc/letsencrypt/live/ahirst.com/fullchain.pem")
+	};
 
-http.listen(3000, () => {
-    console.log("listening on 3000");
-})
+	// Set the app to listen on port 80
+	https.createServer(opts, app).listen(444, () => {
+		console.log("Listening on 444");
+	});
 
-
-//'final'
-
-
-// newMessagesBuffer[];
-// { { speaker: "Person 1", speach: "Hello", p: 0.8 }, { speaker: "Person 2", speach: "Hello", p: 0.4 }, { speaker: "Person 2", speach: "Banana", p: 0.4 } }
-
-// t = 0 -> Person 1: { speach: "Hello", p: 0.8 }
-//    setTimeout(function() {
-//
-//    }, 300)
-// t = 100 -> Person 2: { speach: "Hello", p: 0.4 }
+	// Redirect http to https
+	const http = express();
+	http.get("*", (req, res) => {
+		res.redirect("https://" + req.headers.host + req.url);
+	});
+	http.listen(3000, () => console.log("Redirecting from port 3000"));
+} else {
+  http.listen(3000, () => {
+      console.log("listening on 3000");
+  })
+}
