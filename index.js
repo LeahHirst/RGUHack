@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const passport = require('passport');
 
 var messageID = {};
 var users = {};
@@ -36,6 +37,27 @@ io.on('connection', function(socket){
   });
 });
 
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: "998277289939-80n1rq3l9uhjr643ugutnedj2ln01st6.apps.googleusercontent.com",
+    clientSecret: "auiz-QSfxKC6I6LyJ_VkTzR0",
+    callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    /*User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });*/
+
+    return profile;
+  }
+));
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', successRedirect: '' }));
 
 if (process.env.PRODUCTION == 1) {
   const opts = {
