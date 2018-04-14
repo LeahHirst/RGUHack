@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express();
-const https = require('https').Server(app);
+const fs = require('fs');
+var privateKey = fs.readFileSync('/etc/letsencrypt/live/gohack.org/privkey.pem', 'utf8');
+var certificate = fs.readFileSync('/etc/letsencrypt/live/gohack.org/fullchain.pem', 'utf8');
+var options = { key: privateKey, cert: certificate };
+const https = require('https').createServer(options, app);
 const io = require('socket.io')(https);
 const passport = require('passport');
 const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser')
-const fs = require('fs');
 
 var messageID = {};
 var users = {};
@@ -89,16 +92,11 @@ app.get('/auth/google',
     req.login(profile, next);
   },
   (req, res) => { // On success, redirect back to '/'
-    res.redirect('/');
+    res.redirect('/testroom');
   }
 );
 
 if (process.env.PRODUCTION == 1) {
-  const opts = {
-		key: fs.readFileSync("/etc/letsencrypt/live/gohack.org/privkey.pem"),
-		cert: fs.readFileSync("/etc/letsencrypt/live/gohack.org/fullchain.pem")
-	};
-
 	// Set the app to listen on port 80
   https.listen(443, () => {
 		console.log("Listening on 443");

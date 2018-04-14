@@ -30,7 +30,7 @@
             var name = "<%= profile.name.givenName %>";
             var photo = "<%= profile.photos[0].value %>";
 
-            socket.emit('join room', { name: "Adam", photo: photo, roomId: roomName })
+            socket.emit('join room', { name: name, photo: photo, roomId: roomName })
 
             startTranscribing(socket);
 
