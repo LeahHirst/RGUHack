@@ -45,7 +45,7 @@
             function getUserMessageTemplate(id, message, author) {
                 return `<div class="card card-rtl"><div class="card-image" style="background-image:url('${author.photo}');"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
-
+ 
             socket.on('online users', (data) => {
                 var keys = Object.keys(data.users);
                 $("#nusers").text(keys.length-1);
