@@ -40,6 +40,7 @@ app.get('/', function(req, res){
 
 app.get('/:id', (req, res) => {
   if (!req.user) {
+    req.params.id = req.params.id.toLowerCase();
     req.session.redirectToRoom = req.params.id;
     res.redirect('/auth/google');
   } else {
@@ -52,10 +53,10 @@ io.on('connection', function(socket){
   socket.on('join room', function(id){
     socket.join(id.roomId);
     if(!users[socket.id]) {
-      users[socket.id] = { name: id.name, photo: id.photo, fullName: id.fullName };
+      users[socket.id] = { name: id.name, photo: id.photo, fullName: id.fullName, room: id.roomId };
     }
     socket.emit('online users', { users: users });
-    io.to(id.name).emit('user joined', {user: users[socket.id]});
+    io.to(id.roomId).emit('user joined', {user: users[socket.id]});
   });
   socket.on('interim', obj => {
     if(!messageID[socket.id]) {
@@ -74,7 +75,9 @@ io.on('connection', function(socket){
     messageID[socket.id] = undefined;
   });
 	socket.on('disconnect', () => {
-		var roomID = Object.keys(socket.rooms)[1];
+    var roomID = users[socket.id].room;
+    users[socket.id] = null;
+    
 		io.to(roomID).emit('user left', {user: users[socket.id]});
 	});
 });
