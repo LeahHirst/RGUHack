@@ -97,7 +97,7 @@ if (process.env.PRODUCTION == 1) {
 	};
 
 	// Set the app to listen on port 80
-	https.createServer(opts, app).listen(444, () => {
+	https.createServer(opts, app).listen(443, () => {
 		console.log("Listening on 443");
 	});
 
