@@ -35,15 +35,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', function(req, res){
-  if (!req.user) {
-    res.redirect('/auth/google');
-  } else {
-    res.send(req.user);
-  }
+  res.render('index');
 });
 
 app.get('/:id', (req, res) => {
   if (!req.user) {
+    req.session.redirectToRoom = req.params.id;
     res.redirect('/auth/google');
   } else {
     res.render('room', { room: req.params.id, profile: req.user });
@@ -78,8 +75,6 @@ io.on('connection', function(socket){
 	socket.on('disconnect', () => {
 		var roomID = Object.keys(socket.rooms)[1];
 		io.to(roomID).emit('user left', {user: users[socket.id]});
-	  socket.open();
-
 	});
 });
 
@@ -105,7 +100,12 @@ app.get('/auth/google',
     req.login(profile, next);
   },
   (req, res) => { // On success, redirect back to '/'
-    res.redirect('/testroom');
+    if (!req.session.redirectToRoom) {
+      res.redirect('/testroom');
+    } else {
+      res.redirect('/' + req.session.redirectToRoom);
+    }
+    
   }
 );
 
@@ -125,5 +125,5 @@ if (process.env.PRODUCTION == 1) {
 } else {
   http.listen(3000, () => {
       console.log("listening on 3000");
-  })
+  });
 }

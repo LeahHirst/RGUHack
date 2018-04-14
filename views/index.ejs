@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,300,400" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <title>transcri.me | the web based collaborative dictation service</title>
+</head>
+<body>
+        <div class="content">
+            <h1 class="title">transcri.me</h1>
+            <h2 class="subtitle">the web based collaborative dictation service</h2>
+            
+            <div class="feature-highlight">Get started in 3 easy steps:</div>
+            <div class="feature-steps">
+                <div class="feature"><span class="feature-item">1</span> Enter a room name,</div>
+                <div class="feature"><span class="feature-item">2</span> Sign in with Google</div>
+                <div class="feature"><span class="feature-item">3</span> Get collabin'!</div>
+            </div>
+            <div class="search-wrapper">
+                <input id="room" type="text" placeholder="Room Name" />
+                <button class="go-btn" onclick="goToRoom();">Go</button>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            function goToRoom() {
+                var roomId = $('#room').val();
+                window.location.href = "/" + roomId;
+            }
+        </script>
+</body>
+</html>
