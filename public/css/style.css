@@ -1,9 +1,9 @@
 body {
-    background: -webkit-gradient(linear, left top, left bottom, from(#1e88e5), to(#42a5f5)) fixed;
+    background: #eee;
     width: 100%;
     height: 100%;
     font-family: 'Titillium Web', sans-serif;
-    color: #fff;
+    color: #1e88e5;
 }
 
 .centered {
@@ -17,7 +17,7 @@ body {
 
 .content {
     width: 100%;
-    max-width: 900px;
+    max-width: 700px;
     padding: 20px;
     margin: auto;
 }
@@ -42,15 +42,50 @@ body {
 
 .button {
     padding: 10px 20px;
-    border: solid 1px #fff;
+    border: solid 1px #000;
     border-radius: 5px;
-    color: #fff;
+    color: #000;
     text-decoration: none;
 }
 
+.output {
+    color: #000;
+}
+
 #pin {
-    color: #fff;
+    color: #000;
     background-color: #42a5f5;
-    border: solid 1px #fff;
+    border: solid 1px #000;
     padding: 10px;
+}
+
+.card {
+    background-color:#fff;
+    border-radius: 35px;
+    -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    width: fit-content;
+    color: #000;
+    min-height: 70px;
+}
+
+.card-image {
+    width: 60px;
+    height: 60px;
+    float: left;
+    background-size: cover;
+    display: inline-block;
+    border-radius: 100%;
+    border: solid #fff 5px;
+    background-image: url('https://avatars1.githubusercontent.com/u/9085100?s=400&amp;u=f790e317df4e24a19dd0a1c62cb4b9f2b53d3e70&amp;v=4');
+}
+
+.card-content {
+    padding: 5px;
+    padding-right: 20px;
+    display: inline-block;
+}
+
+.card-title {
+    font-weight:  600;
 }
