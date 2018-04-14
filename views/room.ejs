@@ -12,7 +12,10 @@
         <div class="content">
             <h1 class="title">transcri.me</h1>
             <h2 class="subtitle">the web based collaborative dictation service</h2>
-            <div class=""></div>
+            <div class="header">
+                You are in #<%= room %> with <span id="nusers">0</span> others:
+                <div class="online" id="online-users"></div>
+            </div>
 
             <div id="output">
                 <span id="final"></span>
@@ -28,9 +31,10 @@
 
             var roomName = "<%= room %>";
             var name = "<%= profile.name.givenName %>";
+            var fullName = "<%= profile.displayName %>";
             var photo = "<%= profile.photos[0].value %>";
 
-            socket.emit('join room', { name: name, photo: photo, roomId: roomName })
+            socket.emit('join room', { name: name, photo: photo, roomId: roomName, fullName: fullName })
 
             startTranscribing(socket);
 
@@ -84,6 +88,10 @@
                 }
 
                 el.scrollIntoView();
+            });
+
+            socket.on('user join', (data) => {
+                $('#output').append('<p class="centered-text">' + da + '</p>');
             });
         </script>
 </body>
