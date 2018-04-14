@@ -68,8 +68,6 @@ io.on('connection', function(socket){
 	socket.on('disconnect', () => {
 		var roomID = Object.keys(socket.rooms)[1];
 		io.to(roomID).emit('user left', {user: users[socket.id]});
-	  socket.open();
-
 	});
 });
 
