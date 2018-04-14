@@ -37,6 +37,7 @@ app.get('/', function(req, res){
 
 app.get('/:id', (req, res) => {
   if (!req.user) {
+    req.session.redirectToRoom = req.params.id;
     res.redirect('/auth/google');
   } else {
     res.render('room', { room: req.params.id, profile: req.user });
@@ -94,7 +95,12 @@ app.get('/auth/google',
     req.login(profile, next);
   },
   (req, res) => { // On success, redirect back to '/'
-    res.redirect('/testroom');
+    if (!req.session.redirectToRoom) {
+      res.redirect('/testroom');
+    } else {
+      res.redirect(req.session.redirectToRoom);
+    }
+    
   }
 );
 
