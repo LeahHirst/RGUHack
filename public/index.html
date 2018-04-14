@@ -34,6 +34,10 @@
                 return `<div class="card"><div class="card-image"></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
+            function getUserMessageTemplate(id, message, author) {
+                return `<div class="card card-rtl"><div class="card-image"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+            }
+
             socket.on('interim update', (data) => {
                 // Try to find the associated div
                 var el = document.getElementById('message-' + data.id);
@@ -42,11 +46,17 @@
 
                 if (el == null) {
                     // Create the element
-                    $('#output').append(getMessageTemplate(data.id, data.string, data.user));
-                    console.log(getMessageTemplate(data.id, data.string, data.user));
+                    if (data.target == socket.id) {
+                        $('#output').append(getUserMessageTemplate(data.id, data.string, data.user));
+                        el = document.getElementById('message-' + data.id);
+                    } else {
+                        $('#output').append(getMessageTemplate(data.id, data.string, data.user));
+                    }
                 } else {
-                    $('#message-' + data.id).text(data.string);
+                    $('#message-' + data.id).text(data.string +  "...");
                 }
+                
+                el.scrollIntoView();
             });
 
             socket.on('final update', (data) => {
@@ -58,9 +68,12 @@
                 if (el == null) {
                     // Create the element
                     $('#output').append(getMessageTemplate(data.id, data.string, data.user));
+                    el = document.getElementById('message-' + data.id);
                 } else {
                     $('#message-' + data.id).text(data.string);
                 }
+
+                el.scrollIntoView();
             });
         </script>
 </body>

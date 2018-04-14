@@ -27,11 +27,11 @@ io.on('connection', function(socket){
       messageID[socket.id] = counter++;
     }
     var roomID = Object.keys(socket.rooms)[1];
-    io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id]} );
+    io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
   });
   socket.on('final', obj => {
     var roomID = Object.keys(socket.rooms)[1];
-    io.to(roomID).emit('final update', { string: obj, id: messageID[socket.id], user: users[socket.id]} );
+    io.to(roomID).emit('final update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
     messageID[socket.id] = undefined;
   });
 });

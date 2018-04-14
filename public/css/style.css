@@ -68,6 +68,9 @@ body {
     color: #000;
     min-height: 70px;
     margin-top: 20px;
+    display: grid;
+    grid-template-columns: 60px 100%;
+    grid-gap: 10px;
 }
 
 .card-image {
@@ -85,8 +88,20 @@ body {
     padding: 5px;
     padding-right: 20px;
     display: inline-block;
+    max-width: calc(100% - 85px);
+    padding-right:15px;
 }
 
 .card-title {
     font-weight:  600;
+}
+
+.card-rtl {
+    margin-left: auto;
+    color: white;
+    background-color: #1d88e5;
+}
+
+.card-rtl .card-image {
+    border-color: #1d88e5;
 }
