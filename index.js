@@ -9,7 +9,9 @@ const io = require('socket.io')(https);
 const passport = require('passport');
 const ejs = require('ejs');
 const session = require('express-session');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const giphy = require('giphy-api')('RklxX96Pbmo0rCoQea1ld3x8bfUmUgvt');
+
 
 var messageID = {};
 var users = {};
@@ -64,20 +66,37 @@ io.on('connection', function(socket){
     var roomID = Object.keys(socket.rooms)[1];
     io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
   });
-  socket.on('final', obj => {
+	socket.on('final', obj => {
     var msg = obj;
+		var waitingForGIF = false;
     obj = obj.trim();
-		if(keywords[obj]) {
-			msg = keywords[obj];
+		if(obj.split(' ')[0]=='giphy') {
+			waitingForGIF = true;
+			var search = "";
+			obj.split(' ').forEach(function (word) {
+			     if(word!='giphy') {
+			 			search += word + ' ';
+			 		}
+			});
+			 giphy.search(search).then(function (res) {
+			 	msg = '<iframe src="' + res.data[0].embed_url + '" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
+				var roomID = Object.keys(socket.rooms)[1];
+		    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+		    messageID[socket.id] = undefined;
+				waitingForGIF = false;
+			});
 		}
-    var roomID = Object.keys(socket.rooms)[1];
-    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
-    messageID[socket.id] = undefined;
+		if(!waitingForGIF) {
+			console.log(msg);
+	    var roomID = Object.keys(socket.rooms)[1];
+	    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+	    messageID[socket.id] = undefined;
+		}
   });
 	socket.on('disconnect', () => {
     if (users[socket.id] != null) {
       var roomID = users[socket.id].room;
-      
+
       io.to(roomID).emit('user left', {user: users[socket.id]});
 
       delete users[socket.id];
@@ -112,7 +131,7 @@ app.get('/auth/google',
     } else {
       res.redirect('/' + req.session.redirectToRoom);
     }
-    
+
   }
 );
 
