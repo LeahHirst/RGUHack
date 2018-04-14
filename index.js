@@ -14,6 +14,11 @@ app.get('/', function(req, res){
 
 });
 
+app.get('/:id', (req, res) => {
+  var id = req.params;
+  
+})
+
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('join room', function(id){
@@ -49,7 +54,7 @@ passport.use(new GoogleStrategy({
       return cb(err, user);
     });*/
 
-    return profile;
+    return cb(profile);
   }
 ));
 
