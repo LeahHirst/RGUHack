@@ -41,7 +41,7 @@ app.get('/', function(req, res){
 
 app.get('/:id', (req, res) => {
   if (!req.user) {
-    res.redirect('/auth/google'); 
+    res.redirect('/auth/google');
   } else {
     res.render('room', { room: req.params.id, profile: req.user });
   }
@@ -54,7 +54,7 @@ io.on('connection', function(socket){
     if(!users[socket.id]) {
       users[socket.id] = { name: id.name, photo: id.photo };
     }
-    io.to(id).emit('room msg', {msg: 'Welcome to the room'});
+    io.to(id.name).emit('user joined', {user: users[socket.id]});
   });
   socket.on('interim', obj => {
     if(!messageID[socket.id]) {
@@ -68,6 +68,12 @@ io.on('connection', function(socket){
     io.to(roomID).emit('final update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
     messageID[socket.id] = undefined;
   });
+	socket.on('disconnect', () => {
+		var roomID = Object.keys(socket.rooms)[1];
+		io.to(roomID).emit('user left', {user: users[socket.id]});
+	  socket.open();
+
+	});
 });
 
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -108,7 +114,7 @@ if (process.env.PRODUCTION == 1) {
 		res.redirect("https://" + req.headers.host + req.url);
 	});
 	http.listen(80, () => console.log("Redirecting from port 80"));
-	
+
 } else {
   http.listen(3000, () => {
       console.log("listening on 3000");
