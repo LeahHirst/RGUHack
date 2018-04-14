@@ -22,6 +22,41 @@
 
         <script src="./js/transcri.me.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script>transcrime();</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            var socket = io();
+
+            socket.emit('join room', { name: "Adam", roomId: "testing" })
+
+            startTranscribing(socket);
+
+            function getMessageTemplate(id, message, author) {
+                return `<div class="card"><div class="card-image"></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+            }
+
+            socket.on('interim update', (data) => {
+                // Try to find the associated div
+                var el = $('#message-' + data.id);
+
+                if (el == null) {
+                    // Create the element
+                    $('#output').append(getMessageTemplate(data.message))
+                }
+            });
+
+            socket.on('final update', (data) => {
+                // Try to find the associated div
+                var el = $('#message-' + data.id);
+
+                if (el == null) {
+                    // Create the element
+                    $('#output').append(getMessageTemplate(data.message))
+                }
+
+
+            });
+
+            socket.on('')
+        </script>
 </body>
 </html>
