@@ -47,8 +47,10 @@
             }
 
             socket.on('online users', (data) => {
+
                 $("#nusers").text(data.users.length);
-                data.users.forEach(user => {
+                Object.keys(data.users).forEach(key => {
+                    var user = data.users[key];
                     $("#online-users").append(`<div class="icon" style="background-image: url('${user.photo}');"></div>`) 
                 });
             });
