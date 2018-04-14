@@ -21,15 +21,15 @@ io.on('connection', function(socket){
       users[socket.id] = { name: id.name };
     }
     io.to(id).emit('room msg', {msg: 'Welcome to the room'});
+    console.log('Socket connected to room ' + id.roomId);
   });
   socket.on('interim', obj => {
+    console.log('Emitting interim: ' + obj);
     if(!messageID[socket.id]) {
       messageID[socket.id] = counter++;
     }
     var roomID = Object.keys(socket.rooms)[1];
     io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id]} );
-
-
   });
   socket.on('final', obj => {
     var roomID = Object.keys(socket.rooms)[1];
