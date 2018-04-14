@@ -16,7 +16,7 @@ var users = {};
 var counter = 0;
 var gDataUser = {};
 var keywords = {
-	"amazing" : '<iframe src="https://giphy.com/embed/Fkmgse8OMKn9C" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/amazed-Fkmgse8OMKn9C">via GIPHY</a></p>'
+	"amazing" : '<iframe src="https://giphy.com/embed/Fkmgse8OMKn9C" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>'
 };
 
 passport.serializeUser(function(user, done) {
