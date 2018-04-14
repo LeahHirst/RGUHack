@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
-var privateKey = fs.readFileSync('/etc/letsencrypt/live/gohack.org/privkey.pem', 'utf8');
-var certificate = fs.readFileSync('/etc/letsencrypt/live/gohack.org/fullchain.pem', 'utf8');
+var privateKey = fs.readFileSync('/etc/letsencrypt/live/transcri.me/privkey.pem', 'utf8');
+var certificate = fs.readFileSync('/etc/letsencrypt/live/transcri.me/fullchain.pem', 'utf8');
 var options = { key: privateKey, cert: certificate };
 const https = require('https').createServer(options, app);
 const io = require('socket.io')(https);
@@ -75,7 +75,7 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
     clientID: "998277289939-80n1rq3l9uhjr643ugutnedj2ln01st6.apps.googleusercontent.com",
     clientSecret: "auiz-QSfxKC6I6LyJ_VkTzR0",
-    callbackURL: "https://gohack.org/auth/google/callback"
+    callbackURL: "https://transcri.me/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
     return cb(profile);
