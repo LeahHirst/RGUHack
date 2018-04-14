@@ -109,14 +109,17 @@ body {
 .feature {
     text-align: center;
     display: inline-block;
+    margin: 0 12px;
 }
 
 .feature-highlight {
     text-align: center;
+    margin-top: 20px;
 }
 
 .feature-steps {
     margin: 20px auto;
+    width: fit-content;
 }
 
 .feature-item {
@@ -127,14 +130,29 @@ body {
     display: inline-block;
 }
 
+.search-wrapper {
+    -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    border: none;
+    border-radius: 20px;
+}
+
 #room {
     padding: 20px;
     width: 100%;
     text-align: center;
     font-size: 16px;
-    -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
-    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    max-width: calc(100% - 107px);
+}
+
+.go-btn {
+    display: inline-block;
+    width: 67px;
+    height: 67px;
     border: none;
-    border-radius: 20px;
-    max-width: 660px;
+    background-color: #1d88e5;
+    color: #fff;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    float: right;
 }
