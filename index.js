@@ -32,11 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', function(req, res){
-  if (!req.user) {
-    res.redirect('/auth/google');
-  } else {
-    res.send(req.user);
-  }
+  res.render('index');
 });
 
 app.get('/:id', (req, res) => {
@@ -112,5 +108,5 @@ if (process.env.PRODUCTION == 1) {
 } else {
   http.listen(3000, () => {
       console.log("listening on 3000");
-  })
+  });
 }
