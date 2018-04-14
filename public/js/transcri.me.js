@@ -45,7 +45,8 @@ function startTranscribing(socket) {
         }
     
         recognition.onend = function() { 
-            console.log("Ended");
+            console.log("Ended, restarting");
+            recognition.start();
         }
         recognition.start();
     }
