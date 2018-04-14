@@ -21,13 +21,16 @@
             </div>
             <div class="search-wrapper">
                 <input id="room" type="text" placeholder="Room Name" />
-                <button class="go-btn">Go</button>
+                <button class="go-btn" onclick="goToRoom();">Go</button>
             </div>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
         <script>
-            
+            function goToRoom() {
+                var roomId = $('#room').val();
+                window.location.href = "/" + roomId;
+            }
         </script>
 </body>
 </html>
