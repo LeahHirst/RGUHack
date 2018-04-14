@@ -1,5 +1,5 @@
 // transcri.me.js - Text to Speech
-function startTranscribing(socket, cb) {
+function startTranscribing(socket) {
     var output = document.getElementById("output");
     var final_span = document.getElementById("final");
     var interim_span = document.getElementById("temp");
@@ -31,16 +31,12 @@ function startTranscribing(socket, cb) {
                 }
             }
             if (interim_transcript == "") {
-                cb(final_transcript);
-    
-                final_transcript = "";
-    
-                //socket.emit('final', final_transcript);
+                socket.emit('final', final_transcript);
                 console.log("end of statement");
+
+                final_transcript = "";
             } else {
-                final_span.innerHTML = final_transcript;
-                interim_span.innerHTML = interim_transcript;
-                // socket.emit('interim', final_transcript + interim_transcript);
+                socket.emit('interim', final_transcript + interim_transcript);
             }
         }
     

@@ -36,27 +36,32 @@
 
             socket.on('interim update', (data) => {
                 // Try to find the associated div
-                var el = $('#message-' + data.id);
+                var el = document.getElementById('message-' + data.id);
+
+                console.log(el);
 
                 if (el == null) {
                     // Create the element
-                    $('#output').append(getMessageTemplate(data.message))
+                    $('#output').append(getMessageTemplate(data.id, data.string, data.user));
+                    console.log(getMessageTemplate(data.id, data.string, data.user));
+                } else {
+                    $('#message-' + data.id).text(data.string);
                 }
             });
 
             socket.on('final update', (data) => {
                 // Try to find the associated div
-                var el = $('#message-' + data.id);
+                var el = document.getElementById('message-' + data.id);
+
+                console.log('Final: ' + data.string);
 
                 if (el == null) {
                     // Create the element
-                    $('#output').append(getMessageTemplate(data.message))
+                    $('#output').append(getMessageTemplate(data.id, data.string, data.user));
+                } else {
+                    $('#message-' + data.id).text(data.string);
                 }
-
-
             });
-
-            socket.on('')
         </script>
 </body>
 </html>
