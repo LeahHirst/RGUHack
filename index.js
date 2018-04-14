@@ -6,6 +6,7 @@ const passport = require('passport');
 const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser')
+const fs = require('fs');
 
 var messageID = {};
 var users = {};
