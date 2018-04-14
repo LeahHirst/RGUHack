@@ -80,7 +80,7 @@ io.on('connection', function(socket){
       
       io.to(roomID).emit('user left', {user: users[socket.id]});
 
-      users[socket.id] = null;
+      delete users[socket.id];
     }
 	});
 });

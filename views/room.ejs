@@ -27,7 +27,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
         <script>
-            var socket = io();
+            var socket = io(window.location, { } );
 
             var roomName = "<%= room %>";
             var name = "<%= profile.name.givenName %>";
@@ -48,7 +48,7 @@
 
             socket.on('online users', (data) => {
                 var keys = Object.keys(data.users);
-                $("#nusers").text(keys.length);
+                $("#nusers").text(keys.length-1);
                 keys.forEach(key => {   
                     var user = data.users[key];
                     $("#online-users").append(`<div class="icon" style="background-image: url('${user.photo}');"></div>`) 
