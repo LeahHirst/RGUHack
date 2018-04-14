@@ -108,6 +108,23 @@ body {
 
 .feature {
     text-align: center;
+    display: inline-block;
+}
+
+.feature-highlight {
+    text-align: center;
+}
+
+.feature-steps {
+    margin: 20px auto;
+}
+
+.feature-item {
+    border: #1d88e5 solid 1px;
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    display: inline-block;
 }
 
 #room {
