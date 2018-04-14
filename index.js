@@ -1,11 +1,19 @@
 const express = require('express');
 const app = express();
-
-const io = require('socket.io');
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 app.use(express.static("public"));
 
 app.listen(3000, () => { console.log("Listening on 3000"); });
+
+app.get('/', function(req, res){
+
+});
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
 
 
 // var buffer = [];
@@ -24,7 +32,7 @@ app.listen(3000, () => { console.log("Listening on 3000"); });
 // { { speaker: "Person 1", speach: "Hello", p: 0.8 }, { speaker: "Person 2", speach: "Hello", p: 0.4 }, { speaker: "Person 2", speach: "Banana", p: 0.4 } }
 
 // t = 0 -> Person 1: { speach: "Hello", p: 0.8 }
-//    setTimeout(function() { 
-//      
+//    setTimeout(function() {
+//
 //    }, 300)
 // t = 100 -> Person 2: { speach: "Hello", p: 0.4 }
