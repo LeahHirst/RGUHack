@@ -1,13 +1,12 @@
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const https = require('https').Server(app);
+const io = require('socket.io')(https);
 const passport = require('passport');
 const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser')
 const fs = require('fs');
-const https = require('https');
 
 var messageID = {};
 var users = {};
@@ -101,7 +100,7 @@ if (process.env.PRODUCTION == 1) {
 	};
 
 	// Set the app to listen on port 80
-	https.createServer(opts, http).listen(443, () => {
+  https.listen(443, () => {
 		console.log("Listening on 443");
 	});
 
