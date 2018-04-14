@@ -101,16 +101,12 @@ if (process.env.PRODUCTION == 1) {
 	};
 
 	// Set the app to listen on port 80
-	https.createServer(opts, app).listen(443, () => {
+	https.createServer(opts, http).listen(443, () => {
 		console.log("Listening on 443");
 	});
 
 	// Redirect http to https
-	const http = express();
-	http.get("*", (req, res) => {
-		res.redirect("https://" + req.headers.host + req.url);
-	});
-	http.listen(80, () => console.log("Redirecting from port 80"));
+	
 } else {
   http.listen(3000, () => {
       console.log("listening on 3000");
