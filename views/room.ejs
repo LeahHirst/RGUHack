@@ -27,7 +27,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
         <script>
-            var socket = io(window.location, { } );
+            var socket = io();
 
             var roomName = "<%= room %>";
             var name = "<%= profile.name.givenName %>";
