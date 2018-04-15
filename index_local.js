@@ -9,6 +9,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser')
 const giphy = require('giphy-api')('RklxX96Pbmo0rCoQea1ld3x8bfUmUgvt');
 const youtubeSearch = require("youtube-search")
+const phantom = require('phantom');
 
 var messageID = {};
 var users = {};
@@ -134,6 +135,13 @@ if(word!=obj.split(' ')[0] || wordFound) {
 
       delete users[socket.id];
     }
+	});
+	socket.on('pdf', (data) => {
+		// var doc = new jsPDF();
+		//
+		// doc.text('Hello world!', 10, 10);
+		// doc.save('a4.pdf');
+
 	});
 });
 
