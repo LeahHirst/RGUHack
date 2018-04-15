@@ -171,14 +171,14 @@
                 return `<a class="nostyle" href="${link}"><div class="card file-card">
 <div class="><div class="card-image" style="background-image: url('/img/doc.png');border-radius: 0;border:  none;/* padding: 1px; */margin: 5px;"></div><div class="card-content" style="
     /* border-radius: 20px; */
-"><div class="card-title">${title}</div><div id="message-22">${uploader} uploaded a file</div></div></div></a>`;
+"><div class="card-title">${title}</div><div id="message-22">${uploader.name} uploaded a file</div></div></div></a>`;
             }
 
             function getUserFileTemplate(link, title, uploader) {
                 return `<a class="nostyle" href="${link}"><div class="card file-card card-rtl">
-<div class="><div class="card-image" style="background-image: url('/img/doc.png');border-radius: 0;border:  none;/* padding: 1px; */margin: 5px;"></div><div class="card-content" style="
+<div class="><div class="card-image" style="background-image: url('/img/doc.png');border-radius: 0;border:  none;/* padding: 1px; */margin: 5px; background-size: cover; width: 60px;"></div><div class="card-content" style="
     /* border-radius: 20px; */
-"><div class="card-title">${title}</div><div id="message-22">${uploader} uploaded a file</div></div></div></a>`;
+"><div class="card-title">${title}</div><div id="message-22">${uploader.name} uploaded a file</div></div></div></a>`;
             }
  
             socket.on('online users', (data) => {
