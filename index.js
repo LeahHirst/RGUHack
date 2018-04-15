@@ -76,7 +76,7 @@ io.on('connection', function(socket){
     obj = obj.trim();
 		obj = obj.toLowerCase();
 		if(obj != 'youtube' && obj != 'giphy')
-		if(obj.split(' ')[0]=='youtube' || obj.split(' ')[0]=='giphy') {
+    if(obj.split(' ')[0]=='youtube' || obj.trim()==='show me supply vessels in the north sea' || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -95,7 +95,7 @@ io.on('connection', function(socket){
 			    messageID[socket.id] = undefined;
 					waiting = false;
         });
-      } else if(obj.toLowerCase().trim()=='show me the ships') {
+      } else if(obj.toLowerCase().trim()==='show me supply vessels in the north sea') {
         // Ships
         var roomID = Object.keys(socket.rooms)[1];
         var ships = require('ais.js');
