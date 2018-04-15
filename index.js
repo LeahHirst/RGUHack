@@ -98,7 +98,7 @@ io.on('connection', function(socket){
       } else if(obj.toLowerCase().trim()==='show me supply vessels in the north sea') {
         // Ships
         var roomID = Object.keys(socket.rooms)[1];
-        var ships = require('ais.js');
+        var ships = require('./ais.js');
         io.to(roomID).emit('show map', { ships: ships });
 			} else if(obj.split(' ')[0]=='youtube') {
 				var opts = {
