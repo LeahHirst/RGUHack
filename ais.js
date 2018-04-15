@@ -1,4 +1,20 @@
-module.exports = [ { _id: "5a293b8d02ab4c274aa6a349",
+const MongoClient = require('mongodb').MongoClient;
+
+var cVessels, cPositions, cTowns, db;
+
+MongoClient.connect('mongodb://hackuser:hackuser@csdm-mongodb.rgu.ac.uk/hackais', (err, database) => {
+    if (err) console.log(err);
+    db = database.db('hackais');
+    cVessels = db.collection('vessels');
+    cPositions = db.collection('positions');
+    cTowns = db.collection('towns');
+    console.log('Database connection established!');
+});
+
+
+var notneeded=[ 
+    
+    { _id: "5a293b8d02ab4c274aa6a349",
     AISVersion: 0,
     CallSign: 'OZ2151',
     Name: 'STRIL NEPTUN',
@@ -7089,3 +7105,44 @@ module.exports = [ { _id: "5a293b8d02ab4c274aa6a349",
     lastPos: 
      { _id: "5a25cb661d267362b7b8e2b4",
        location: [ -3.16414, 55.981567 ] } } ];
+
+
+       module.exports = {
+
+        getAllPositions(cb) {
+            if (cPositions) {
+                cPositions.aggregate([
+                        {
+                            $group:
+                            {
+                                _id: "$MMSI",
+                                lastUpdate: {"$first":"$RecvTime" },
+                                location: { $push: { location: "$location"} }
+                            }
+                        }
+                    ], { allowDiskUse: true }).toArray((err, positions) => {
+                        console.log('Array got');
+                        if (err) console.log(err);
+                        console.log(positions)
+                        cb(positions);
+                });
+            }
+        },
+    
+        getShipData(shipname, cb) {
+            if (cVessels) {
+                shipname = shipname.toUpperCase()
+                console.log('searching for ship "' + shipname + '"');
+                cVessels.findOne({ Name: 'GH VOYAGER' }, (err, vessel) => {
+                    cPositions.find({ MMSI: vessel.MMSI }).toArray((err, res) => {
+                        vessel.positions = res;
+            
+                        cb(err, vessel);
+                    })
+                });
+            }
+        },
+    
+        notneeded: notneeded
+    
+    };
