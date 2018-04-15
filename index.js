@@ -59,6 +59,13 @@ io.on('connection', function(socket){
     socket.emit('online users', { users: users });
     io.to(id.roomId).emit('user joined', {user: users[socket.id]});
   });
+  socket.on('file', obj => {
+    // obj = { url: ..., name: ... }
+    console.log('file upload');
+    console.log(obj);
+    var roomId = Object.keys(socket.rooms)[1];
+    io.to(roomId).emit('file upload', { url: obj.url, uploader: users[socket.id], name: obj.name, target: socket.id });
+  });
   socket.on('interim', obj => {
     if(!messageID[socket.id]) {
       messageID[socket.id] = counter++;

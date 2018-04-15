@@ -189,3 +189,13 @@ body {
 .centered-text {
     text-align:center;
 }
+
+.nostyle {
+    text-decoration: none;
+}
+
+.file-card {
+    background-color: #fff;
+    color: black;
+    border-radius: 20px;
+}

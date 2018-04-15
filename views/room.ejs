@@ -7,6 +7,88 @@
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,300,400" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <title>transcri.me | #<%= room %></title>
+    
+
+    <script type="text/javascript">
+
+        var socket;
+
+        // The Browser API key obtained from the Google API Console.
+        // Replace with your own Browser API key, or your own key.
+        var developerKey = 'AIzaSyA1HMIP6m3QlUSEUGN40qIvx-debJDlWXw';
+    
+        // The Client ID obtained from the Google API Console. Replace with your own Client ID.
+        var clientId = "998277289939-80n1rq3l9uhjr643ugutnedj2ln01st6.apps.googleusercontent.com"
+    
+        // Replace with your own project number from console.developers.google.com.
+        // See "Project number" under "IAM & Admin" > "Settings"
+        var appId = "998277289939";
+    
+        // Scope to use to access user's Drive items.
+        var scope = ['https://www.googleapis.com/auth/drive'];
+    
+        var pickerApiLoaded = false;
+        var oauthToken;
+    
+        // Use the Google API Loader script to load the google.picker script.
+        function loadPicker() {
+          gapi.load('auth', {'callback': onAuthApiLoad});
+          gapi.load('picker', {'callback': onPickerApiLoad});
+        }
+
+        function resLoaded() {
+            console.log('GPicker API loaded.');   
+        }
+    
+        function onAuthApiLoad() {
+          window.gapi.auth.authorize(
+              {
+                'client_id': clientId,
+                'scope': scope,
+                'immediate': false
+              },
+              handleAuthResult);
+        }
+    
+        function onPickerApiLoad() {
+          pickerApiLoaded = true;
+          createPicker();
+        }
+    
+        function handleAuthResult(authResult) {
+          if (authResult && !authResult.error) {
+            oauthToken = authResult.access_token;
+            createPicker();
+          }
+        }
+
+        // Create and render a Picker object for searching images.
+        function createPicker() {
+          if (pickerApiLoaded && oauthToken) {
+            var view = new google.picker.View(google.picker.ViewId.DOCS);
+            var picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.NAV_HIDDEN)
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .setAppId(appId)
+                .setOAuthToken(oauthToken)
+                .addView(view)
+                .addView(new google.picker.DocsUploadView())
+                .setDeveloperKey(developerKey)
+                .setCallback(pickerCallback)
+                .build();
+             picker.setVisible(true);
+          }
+        }
+    
+        // A simple callback implementation.
+        function pickerCallback(data) {
+          if (data.action == google.picker.Action.PICKED) {
+              console.log('Emitting file event');
+              console.log(socket);
+            socket.emit('file', { name: data.docs[0].name, url: data.docs[0].url })
+          }
+        }
+        </script>
 </head>
 <body>
         <div class="content">
@@ -21,13 +103,50 @@
                 <span id="final"></span>
                 <span id="temp"></span>
             </div>
+
+            <div class="footer-actions" style="width: fit-content;margin: 40px auto;margin-bottom: 10px;">
+                    <button style="
+                    /* width: calc(50% - 40px); */
+                    border: none;
+                    background-color: #eee;
+                    font-size: 16px;
+                    font-weight: 200;
+                    border: #000 solid 1px;
+                    border-radius: 20px;
+                    padding: 20px 30px;
+                    margin: 0 10px;
+                    display: inline-block;
+                " onclick="uploadFile();"><img src="/img/upload.png" style="
+                    height: 23px;
+                    margin-right: 15px;
+                    vertical-align: middle;
+                    margin-top: -4px;
+                ">Upload a file</button>
+                <button style="
+                    /* width: calc(50% - 40px); */
+                    border: none;
+                    background-color: #eee;
+                    font-size: 16px;
+                    font-weight: 200;
+                    border: #000 solid 1px;
+                    border-radius: 20px;
+                    padding: 20px 30px;
+                    margin: 0 10px;
+                    display: inline-block;
+                " onclick="downloadPdf();"><img src="/img/download.png" style="
+                    height: 23px;
+                    margin-right: 15px;
+                    vertical-align: middle;
+                    margin-top: -4px;
+                ">Download transcript</button></div>
         </div>
 
         <script src="./js/transcri.me.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=resLoaded"></script>
         <script>
-            var socket = io();
+            socket = io();
 
             var roomName = "<%= room %>";
             var name = "<%= profile.name.givenName %>";
@@ -44,6 +163,20 @@
 
             function getUserMessageTemplate(id, message, author) {
                 return `<div class="card card-rtl"><div class="card-image" style="background-image:url('${author.photo}');"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+            }
+
+            function getFileTemplate(link, title, uploader) {
+                return `<a class="nostyle" href="${link}"><div class="card file-card">
+<div class="><div class="card-image" style="background-image: url('/img/doc.png');border-radius: 0;border:  none;/* padding: 1px; */margin: 5px;"></div><div class="card-content" style="
+    /* border-radius: 20px; */
+"><div class="card-title">${title}</div><div id="message-22">${uploader} uploaded a file</div></div></div></a>`;
+            }
+
+            function getUserFileTemplate(link, title, uploader) {
+                return `<a class="nostyle" href="${link}"><div class="card file-card card-rtl">
+<div class="><div class="card-image" style="background-image: url('/img/doc.png');border-radius: 0;border:  none;/* padding: 1px; */margin: 5px;"></div><div class="card-content" style="
+    /* border-radius: 20px; */
+"><div class="card-title">${title}</div><div id="message-22">${uploader} uploaded a file</div></div></div></a>`;
             }
  
             socket.on('online users', (data) => {
@@ -105,7 +238,19 @@
 
             socket.on('user left', (data) => {
                 $('#output').append('<p class="centered-text">' + data.user.fullName + ' has left the room</p>');
-            })
+            });
+
+            socket.on('file upload', (data) => {
+                if (data.target == socket.id) {
+                    $('#output').append(getUserFileTemplate(data.url, data.name, data.uploader));
+                } else {
+                    $('#output').append(getFileTemplate(data.url, data.name, data.uploader));
+                }
+            });
+
+            function uploadFile() {
+                loadPicker();
+            }
         </script>
 </body>
 </html>
