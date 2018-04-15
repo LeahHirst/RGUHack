@@ -106,12 +106,19 @@ io.on('connection', function(socket){
 			} else if(obj.trim().startsWith("locate ship")) {
         // Ships
         var shipName = obj.trim().replace('locate ship ', '');
-        ships.getShipData(shipName, (err, ship) => {
-          io.to(roomID).emit('show ship', { ship: ship });
-        });
+        // ATTENTION! Due to the MongoDB not working on DigitalOcean, we had to mock the data. Download Repo and test on localhost, it does work promise
+        
         var roomID = Object.keys(socket.rooms)[1];
-					    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
-					    messageID[socket.id] = undefined;
+        if (shipName.toLowerCase() == "gh voyager")
+          io.to(roomID).emit('show ship', { coords: ships.coords2 });
+        else if (shipName.toLowerCase() == "sea spider")
+          io.to(roomID).emit('show ship', { coords: ships.coords });
+        // ships.getShipData(shipName, (err, ship) => {
+        //   io.to(roomID).emit('show ship', { ship: ship, coords: ships.coords });
+        // });
+        
+        io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+        messageID[socket.id] = undefined;
 			} else if(obj.split(' ')[0]=='youtube') {
 				var opts = {
 				  maxResults: 10,

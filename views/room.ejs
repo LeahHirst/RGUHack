@@ -255,12 +255,25 @@
                     zoom: 5
                 }) // 57.7500317,-2.4460594,7.24z
 
+                map.flyTo({
+                    center: [-2.446, 57.75],
+                    zoom: 5
+                });
+
                 map.on('load', function() {
                     var geojson = {
                         "type": "FeatureCollection",
                         "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
                         "features": [],
                     }
+
+                    try {
+                        map.removeLayer('route');
+                    } catch (e) { // gotta catch them all
+                        console.log('boo hoo');
+                    }
+
+                    
 
                     data.ships.forEach((ship) => {
                         geojson.features.push({
@@ -366,6 +379,8 @@
                             ]
                         }
                     }, 'waterway-label');
+
+                    map.setLayoutProperty('ships-heat', 'visibility', 'none');
                 })
             }
                 
@@ -390,9 +405,47 @@
             socket.on('show ship', (data) => {
                 if (!!map) {
                     map.flyTo({
-                        center: data.ship.positions[0].location,
+                        center: data.coords[data.coords.length-1],
                         zoom: 10,
                     });
+
+                    var geojson = {
+                        "type": "FeatureCollection",
+                        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                        "features": [],
+                    }
+
+                    try {
+                        map.removeLayer('route');
+                    } catch (e) { // gotta catch them all
+                        console.log('boo hoo');
+                    }
+                    
+                    map.addLayer({
+                        "id": "route",
+                        "type": "line",
+                        "source": {
+                            "type": "geojson",
+                            "data": {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "LineString",
+                                    "coordinates": data.coords
+                                }
+                            }
+                        },
+                        "layout": {
+                            "line-join": "round",
+                            "line-cap": "round"
+                        },
+                        "paint": {
+                            "line-color": "#1e88e5",
+                            "line-width": 2
+                        }
+                    });
+
+                    map.setLayoutProperty('ships-heat', 'visibility', 'none');
                 }
             })
 

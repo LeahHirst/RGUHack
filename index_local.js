@@ -105,7 +105,7 @@ if(word!=obj.split(' ')[0] || wordFound) {
                 // Ships
                 var shipName = obj.trim().replace('locate vessel ', '');
                 ships.getShipData(shipName, (err, ship) => {
-                  io.to(roomID).emit('show ship', { ship: ship });
+                  io.to(roomID).emit('show ship', { ship: ship, coords: ships.coords });
                 });
                 var roomID = Object.keys(socket.rooms)[1];
                                 io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
