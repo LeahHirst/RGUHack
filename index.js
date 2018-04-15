@@ -77,7 +77,7 @@ io.on('connection', function(socket){
     obj = obj.trim();
 		obj = obj.toLowerCase();
 		if(obj != 'youtube' && obj != 'giphy')
-    if(obj.split(' ')[0]=='youtube' || obj.trim().startsWith("locate ship") || obj.trim()==='show me supply vessels in the north sea' || obj.split(' ')[0]=='giphy') {
+    if(obj.split(' ')[0]=='youtube' || obj.trim().startsWith("locate ship") || (obj.includes("vessel") && obj.includes("north sea")) || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -96,7 +96,7 @@ io.on('connection', function(socket){
 			    messageID[socket.id] = undefined;
 					waiting = false;
         });
-      } else if(obj.toLowerCase().trim()==='show me supply vessels in the north sea') {
+      } else if((obj.includes("vessel") && obj.includes("north sea"))) {
         // Ships
         var roomID = Object.keys(socket.rooms)[1];
         io.to(roomID).emit('show map', { ships: ships.notneeded });
