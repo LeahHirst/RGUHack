@@ -62,6 +62,13 @@ io.on('connection', function(socket){
     var roomID = Object.keys(socket.rooms)[1];
     io.to(roomID).emit('interim update', { string: obj, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
   });
+  socket.on('file', obj => {
+    // obj = { url: ..., name: ... }
+    console.log('file upload');
+    console.log(obj);
+    var roomId = Object.keys(socket.rooms)[1];
+    io.to(roomId).emit('file upload', { url: obj.url, uploader: users[socket.id], name: obj.name, target: socket.id });
+  });
   socket.on('final', obj => {
     var msg = obj;
 		var waitingForGIF = false;
@@ -71,8 +78,8 @@ io.on('connection', function(socket){
 			var search = "";
 			obj.split(' ').forEach(function (word) {
 			     if(word!='giphy') {
-			 			search += word + ' ';
-			 		}
+			 		search += word + ' ';
+                }
 			});
 			 giphy.search(search).then(function (res) {
 			 	msg = '<iframe src="' + res.data[0].embed_url + '" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
