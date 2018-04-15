@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 var cVessels, cPositions, cTowns, db;
 
-MongoClient.connect('mongodb://hackuser:hackuser@csdm-mongodb.rgu.ac.uk/hackais', (err, database) => {
+MongoClient.connect('mongodb://hackuser:hackuser@csdm-mongodb.rgu.ac.uk:27017/hackais', (err, database) => {
     if (err) console.log(err);
     db = database.db('hackais');
     cVessels = db.collection('vessels');
