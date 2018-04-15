@@ -154,6 +154,7 @@
             var fullName = "<%= profile.displayName %>";
             var photo = "<%= profile.photos[0].value %>";
             var mapN = 0;
+            var map;
 
             socket.emit('join room', { name: name, photo: photo, roomId: roomName, fullName: fullName })
 
@@ -243,10 +244,12 @@
             });
 
             socket.on('show map', (data) => {
-                $('#output').append(`<div class="map" id='map-${mapN++}'></div>`);
+                $('#output').append(`<div class="map" id='map'></div>`);
                 mapboxgl.accessToken = 'pk.eyJ1IjoiYWhyZ3VoYWNrIiwiYSI6ImNqZzA4OGptNzBucWsyem54bWR2Mjd0cmcifQ.B88XcOovHjXGXH9ocy1mJg';
-                var map = new mapboxgl.Map({
-                    container: 'map-' + (mapN-1),
+                
+                if (!map) {
+                    map = new mapboxgl.Map({
+                    container: 'map',
                     style: 'mapbox://styles/mapbox/dark-v9',
                     center: [-2.446, 57.75],
                     zoom: 5
@@ -297,11 +300,11 @@
                                 "interpolate",
                                 ["linear"],
                                 ["heatmap-density"],
-                                0, "rgb(47, 85, 104)",
-                                0.2, "rgb(53, 109, 137)",
-                                0.4, "rgb(55, 127, 163)",
-                                0.6, "rgb(52, 143, 188)",
-                                0.8, "rgb(47, 167, 226)",
+                                0, "rgba(47, 85, 104, 0)",
+                                0.2, "rgba(53, 109, 137, 0.2)",
+                                0.4, "rgba(55, 127, 163, 0.4)",
+                                0.6, "rgba(52, 143, 188, 0.6)",
+                                0.8, "rgba(47, 167, 226, 0.8)",
                                 1, "rgb(9, 167, 244)"
                             ],
                             // Adjust the heatmap radius by zoom level
@@ -364,6 +367,8 @@
                         }
                     }, 'waterway-label');
                 })
+            }
+                
             });
 
             socket.on('user joined', (data) => {
@@ -381,6 +386,15 @@
                     $('#output').append(getFileTemplate(data.url, data.name, data.uploader));
                 }
             });
+
+            socket.on('show ship', (data) => {
+                if (!!map) {
+                    map.flyTo({
+                        center: data.ship.positions[0].location,
+                        zoom: 10,
+                    });
+                }
+            })
 
             function uploadFile() {
                 loadPicker();

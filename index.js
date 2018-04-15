@@ -12,6 +12,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const giphy = require('giphy-api')('RklxX96Pbmo0rCoQea1ld3x8bfUmUgvt');
 const youtubeSearch = require("youtube-search");
+var ships = require('./ais.js');
 
 var messageID = {};
 var users = {};
@@ -76,7 +77,7 @@ io.on('connection', function(socket){
     obj = obj.trim();
 		obj = obj.toLowerCase();
 		if(obj != 'youtube' && obj != 'giphy')
-    if(obj.split(' ')[0]=='youtube' || obj.trim()==='show me supply vessels in the north sea' || obj.split(' ')[0]=='giphy') {
+    if(obj.split(' ')[0]=='youtube' || obj.trim().startsWith("locate ship") || obj.trim()==='show me supply vessels in the north sea' || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -98,8 +99,19 @@ io.on('connection', function(socket){
       } else if(obj.toLowerCase().trim()==='show me supply vessels in the north sea') {
         // Ships
         var roomID = Object.keys(socket.rooms)[1];
-        var ships = require('./ais.js');
-        io.to(roomID).emit('show map', { ships: ships });
+        io.to(roomID).emit('show map', { ships: ships.notneeded });
+        var roomID = Object.keys(socket.rooms)[1];
+					    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+					    messageID[socket.id] = undefined;
+			} else if(obj.trim().startsWith("locate ship")) {
+        // Ships
+        var shipName = obj.trim().replace('locate ship ', '');
+        ships.getShipData(shipName, (err, ship) => {
+          io.to(roomID).emit('show ship', { ship: ship });
+        });
+        var roomID = Object.keys(socket.rooms)[1];
+					    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+					    messageID[socket.id] = undefined;
 			} else if(obj.split(' ')[0]=='youtube') {
 				var opts = {
 				  maxResults: 10,
@@ -136,7 +148,7 @@ io.on('connection', function(socket){
 
       delete users[socket.id];
     }
-	});
+  });
 });
 
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
