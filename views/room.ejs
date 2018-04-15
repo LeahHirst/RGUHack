@@ -156,6 +156,7 @@
             var mapN = 0;
             var map;
             var lineDrawn = false;
+            var routeId = 0;
 
             socket.emit('join room', { name: name, photo: photo, roomId: roomName, fullName: fullName })
 
@@ -267,8 +268,8 @@
                         "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
                         "features": [],
                     }
-
-                    map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
+                    if (routeId != 0)
+                        map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
 
                     data.ships.forEach((ship) => {
                         geojson.features.push({
@@ -410,8 +411,8 @@
                         "features": [],
                     }
 
-
-                    map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
+                    if (routeId != 0)
+                        map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
 
                     lineDrawn = true;
                     
