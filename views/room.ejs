@@ -155,6 +155,7 @@
             var photo = "<%= profile.photos[0].value %>";
             var mapN = 0;
             var map;
+            var lineDrawn = false;
 
             socket.emit('join room', { name: name, photo: photo, roomId: roomName, fullName: fullName })
 
@@ -267,13 +268,10 @@
                         "features": [],
                     }
 
-                    try {
+                    if (lineDrawn) {
                         map.removeLayer('route');
-                    } catch (e) { // gotta catch them all
-                        console.log('boo hoo');
+                        lineDrawn = false;
                     }
-
-                    
 
                     data.ships.forEach((ship) => {
                         geojson.features.push({
@@ -415,11 +413,11 @@
                         "features": [],
                     }
 
-                    try {
+                    if (lineDrawn) {
                         map.removeLayer('route');
-                    } catch (e) { // gotta catch them all
-                        console.log('boo hoo');
                     }
+
+                    lineDrawn = true;
                     
                     map.addLayer({
                         "id": "route",
