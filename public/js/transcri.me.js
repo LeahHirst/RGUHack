@@ -6,7 +6,7 @@ function startTranscribing(socket) {
     var final_transcript = '';
 
     if (!('webkitSpeechRecognition' in window)) {
-        upgrade();
+        alert('Your browser is currently not supported! Please use a webkit browser such as Chrome or Opera.')
     } else {
         console.log("Start recognition");
         var recognition = new webkitSpeechRecognition();
