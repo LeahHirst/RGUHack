@@ -71,7 +71,9 @@ io.on('connection', function(socket){
     var msg = obj;
 		var waiting = false;
     obj = obj.trim();
-		if(obj.split(' ')[0]=='YouTube' || obj.toLowerCase().trim()==='show me the ships' || obj.split(' ')[0]=='giphy') {
+		obj = obj.toLowerCase();
+		if(obj != 'youtube' && obj != 'giphy')
+		if(obj.split(' ')[0]=='youtube' || obj.trim()==='show me supply vessels in the north sea' || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -90,13 +92,13 @@ if(word!=obj.split(' ')[0] || wordFound) {
 			    messageID[socket.id] = undefined;
 					waiting = false;
                 });
-            } else if(obj.toLowerCase().trim()==='show me the ships') {
+            } else if(obj.toLowerCase().trim()==='show me supply vessels in the north sea') {
                     // Ships
                     var roomID = Object.keys(socket.rooms)[1];
                     var ships = require('./ais.js');
                     console.log('emmiting ' + ships.length + ' ships');
                     io.to(roomID).emit('show map', { ships: ships });
-			} else if(obj.split(' ')[0]=='YouTube') {
+			} else if(obj.split(' ')[0]=='youtube') {
 				var opts = {
 				  maxResults: 10,
 				  key: 'AIzaSyA1HMIP6m3QlUSEUGN40qIvx-debJDlWXw'
