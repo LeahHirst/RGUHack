@@ -74,7 +74,9 @@ io.on('connection', function(socket){
     var msg = obj;
 		var waiting = false;
     obj = obj.trim();
-		if(obj.split(' ')[0]=='YouTube' || obj.split(' ')[0]=='giphy') {
+		obj = obj.toLowerCase();
+		if(obj != 'youtube' && obj != 'giphy')
+		if(obj.split(' ')[0]=='youtube' || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -98,7 +100,7 @@ io.on('connection', function(socket){
         var roomID = Object.keys(socket.rooms)[1];
         var ships = require('ais.js');
         io.to(roomID).emit('show map', { ships: ships });
-			} else if(obj.split(' ')[0]=='YouTube') {
+			} else if(obj.split(' ')[0]=='youtube') {
 				var opts = {
 				  maxResults: 10,
 				  key: 'AIzaSyA1HMIP6m3QlUSEUGN40qIvx-debJDlWXw'
