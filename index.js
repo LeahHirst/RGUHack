@@ -77,7 +77,7 @@ io.on('connection', function(socket){
     obj = obj.trim();
 		obj = obj.toLowerCase();
 		if(obj != 'youtube' && obj != 'giphy')
-    if(obj.split(' ')[0]=='youtube' || obj.trim().startsWith("locate ship") || (obj.includes("vessel") && obj.includes("north sea")) || obj.split(' ')[0]=='giphy') {
+    if(obj.split(' ')[0]=='youtube' || obj.trim().startsWith("locate vessel") || (obj.includes("vessel") && obj.includes("north sea")) || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
 			var wordFound = false;
@@ -103,9 +103,9 @@ io.on('connection', function(socket){
         var roomID = Object.keys(socket.rooms)[1];
 					    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
 					    messageID[socket.id] = undefined;
-			} else if(obj.trim().startsWith("locate ship")) {
+			} else if(obj.trim().startsWith("locate vessel")) {
         // Ships
-        var shipName = obj.trim().replace('locate ship ', '');
+        var shipName = obj.trim().replace('locate vessel ', '');
         // ATTENTION! Due to the MongoDB not working on DigitalOcean, we had to mock the data. Download Repo and test on localhost, it does work promise
         
         var roomID = Object.keys(socket.rooms)[1];
