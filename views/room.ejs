@@ -246,6 +246,7 @@
             });
 
             socket.on('show map', (data) => {
+
                 $('#output').append(`<div class="map" id='map'></div>`);
                 mapboxgl.accessToken = 'pk.eyJ1IjoiYWhyZ3VoYWNrIiwiYSI6ImNqZzA4OGptNzBucWsyem54bWR2Mjd0cmcifQ.B88XcOovHjXGXH9ocy1mJg';
                 
@@ -256,6 +257,7 @@
                     center: [-2.446, 57.75],
                     zoom: 5
                 }) // 57.7500317,-2.4460594,7.24z
+            }
 
                 map.flyTo({
                     center: [-2.446, 57.75],
@@ -378,8 +380,8 @@
 
                     map.setLayoutProperty('ships-heat', 'visibility', 'visible');
                 })
-            }
-                
+            
+                $("#map").appendTo("#output");
             });
 
             socket.on('user joined', (data) => {
@@ -441,6 +443,8 @@
                     });
 
                     map.setLayoutProperty('ships-heat', 'visibility', 'none');
+
+                    $("#map").appendTo("#output");
                 }
             })
 
