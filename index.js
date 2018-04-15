@@ -74,6 +74,7 @@ io.on('connection', function(socket){
     var msg = obj;
 		var waiting = false;
     obj = obj.trim();
+		if(obj != 'YouTube' && obj != 'giphy')
 		if(obj.split(' ')[0]=='YouTube' || obj.split(' ')[0]=='giphy') {
 			waiting = true;
 			var search = "";
