@@ -11,15 +11,12 @@ const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const giphy = require('giphy-api')('RklxX96Pbmo0rCoQea1ld3x8bfUmUgvt');
-
+const youtubeSearch = require("youtube-search");
 
 var messageID = {};
 var users = {};
 var counter = 0;
 var gDataUser = {};
-var keywords = {
-	"amazing" : '<iframe src="https://giphy.com/embed/Fkmgse8OMKn9C" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>'
-};
 
 passport.serializeUser(function(user, done) {
 	done(null, user.id);
@@ -68,25 +65,49 @@ io.on('connection', function(socket){
   });
 	socket.on('final', obj => {
     var msg = obj;
-		var waitingForGIF = false;
+		var waiting = false;
     obj = obj.trim();
-		if(obj.split(' ')[0]=='giphy') {
-			waitingForGIF = true;
+		if(obj.split(' ')[0]=='YouTube' || obj.split(' ')[0]=='giphy') {
+			waiting = true;
 			var search = "";
+			var wordFound = false;
 			obj.split(' ').forEach(function (word) {
-			     if(word!='giphy') {
+			     if(word!=obj.split(' ')[0] || wordFound) {
 			 			search += word + ' ';
-			 		}
+			 		} else {
+						wordFound = true;
+					}
 			});
-			 giphy.search(search).then(function (res) {
-			 	msg = '<iframe src="' + res.data[0].embed_url + '" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
-				var roomID = Object.keys(socket.rooms)[1];
-		    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
-		    messageID[socket.id] = undefined;
-				waitingForGIF = false;
-			});
+			if(obj.split(' ')[0]=='giphy') {
+				 giphy.search(search).then(function (res) {
+				 	msg = '<iframe src="' + res.data[0].embed_url + '" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
+					var roomID = Object.keys(socket.rooms)[1];
+			    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+			    messageID[socket.id] = undefined;
+					waiting = false;
+				});
+			} else if(obj.split(' ')[0]=='YouTube') {
+				var opts = {
+				  maxResults: 10,
+				  key: 'AIzaSyA1HMIP6m3QlUSEUGN40qIvx-debJDlWXw'
+				};
+				youtubeSearch(search, opts, function(err, results) {
+				  if(err) return;
+					var BreakException = {};
+				  results.forEach(function (result) {
+						if(result.kind == 'youtube#video') {
+							msg = '<iframe src="https://www.youtube.com/embed/' + result.id + '?autoplay=1" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
+							var roomID = Object.keys(socket.rooms)[1];
+					    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
+					    messageID[socket.id] = undefined;
+							waiting = false;
+							throw BreakException;
+						}
+					});
+				});
+			}
 		}
-		if(!waitingForGIF) {
+		if(!waiting) {
 			console.log(msg);
 	    var roomID = Object.keys(socket.rooms)[1];
 	    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
