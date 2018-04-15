@@ -268,10 +268,7 @@
                         "features": [],
                     }
 
-                    if (lineDrawn) {
-                        map.removeLayer('route');
-                        lineDrawn = false;
-                    }
+                    map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
 
                     data.ships.forEach((ship) => {
                         geojson.features.push({
@@ -413,14 +410,13 @@
                         "features": [],
                     }
 
-                    if (lineDrawn) {
-                        map.removeLayer('route');
-                    }
+
+                    map.setLayoutProperty('route' + (routeId-1), 'visibility', 'none');
 
                     lineDrawn = true;
                     
                     map.addLayer({
-                        "id": "route",
+                        "id": "route" + routeId++,
                         "type": "line",
                         "source": {
                             "type": "geojson",
