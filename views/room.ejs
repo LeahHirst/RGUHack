@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,300,400" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <title>transcri.me | #<%= room %></title>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu" crossorigin="anonymous"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
     <script type="text/javascript">
@@ -17,20 +17,20 @@
         // The Browser API key obtained from the Google API Console.
         // Replace with your own Browser API key, or your own key.
         var developerKey = 'AIzaSyA1HMIP6m3QlUSEUGN40qIvx-debJDlWXw';
-    
+
         // The Client ID obtained from the Google API Console. Replace with your own Client ID.
         var clientId = "998277289939-80n1rq3l9uhjr643ugutnedj2ln01st6.apps.googleusercontent.com"
-    
+
         // Replace with your own project number from console.developers.google.com.
         // See "Project number" under "IAM & Admin" > "Settings"
         var appId = "998277289939";
-    
+
         // Scope to use to access user's Drive items.
         var scope = ['https://www.googleapis.com/auth/drive'];
-    
+
         var pickerApiLoaded = false;
         var oauthToken;
-    
+
         // Use the Google API Loader script to load the google.picker script.
         function loadPicker() {
           gapi.load('auth', {'callback': onAuthApiLoad});
@@ -38,9 +38,9 @@
         }
 
         function resLoaded() {
-            console.log('GPicker API loaded.');   
+            console.log('GPicker API loaded.');
         }
-    
+
         function onAuthApiLoad() {
           window.gapi.auth.authorize(
               {
@@ -50,12 +50,12 @@
               },
               handleAuthResult);
         }
-    
+
         function onPickerApiLoad() {
           pickerApiLoaded = true;
           createPicker();
         }
-    
+
         function handleAuthResult(authResult) {
           if (authResult && !authResult.error) {
             oauthToken = authResult.access_token;
@@ -80,7 +80,7 @@
              picker.setVisible(true);
           }
         }
-    
+
         // A simple callback implementation.
         function pickerCallback(data) {
           if (data.action == google.picker.Action.PICKED) {
@@ -159,12 +159,20 @@
 
             startTranscribing(socket);
 
+            function downloadPdf() {
+              window.print();
+
+
+
+            }
+
+
             function getMessageTemplate(id, message, author) {
-                return `<div class="card"><div class="card-image" style="background-image:url('${author.photo}');"></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+                return `<div class="card"><div class="card-image"><img src='${author.photo}' width=60 height=60></div> <div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
             function getUserMessageTemplate(id, message, author) {
-                return `<div class="card card-rtl"><div class="card-image" style="background-image:url('${author.photo}');"></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
+                return `<div class="card card-rtl"><div class="card-image"><img src='${author.photo}' width=60 height=60></div><div class="card-content"><div class="card-title">${author.name}</div><div id="message-${id}">${message}</div></div></div>`;
             }
 
             function getFileTemplate(link, title, uploader) {
@@ -180,13 +188,13 @@
     /* border-radius: 20px; */
 "><div class="card-title">${title}</div><div id="message-22">${uploader} uploaded a file</div></div></div></a>`;
             }
- 
+
             socket.on('online users', (data) => {
                 var keys = Object.keys(data.users);
                 $("#nusers").text(keys.length-1);
-                keys.forEach(key => {   
+                keys.forEach(key => {
                     var user = data.users[key];
-                    $("#online-users").append(`<div class="icon" style="background-image: url('${user.photo}');"></div>`) 
+                    $("#online-users").append(`<div class="icon"><img src='${user.photo}' width=30 height=30></div>`)
                 });
             });
 
@@ -208,7 +216,7 @@
                 } else {
                     $('#message-' + data.id).text(data.string +  "...");
                 }
-                
+
                 el.scrollIntoView();
             });
 
@@ -230,7 +238,7 @@
                 } else {
                     $('#message-' + data.id).html(data.string);
                 }
- 
+
                 el.scrollIntoView();
             });
 
@@ -261,7 +269,7 @@
                             }
                         })
                     });
-                    
+
                     map.addSource('ships', {
                         type: 'geojson',
                         data: geojson,
