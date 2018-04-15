@@ -79,9 +79,9 @@ body {
     float: left;
     background-size: cover;
     display: inline-block;
+    overflow: hidden;
     border-radius: 100%;
     border: solid #fff 5px;
-    background-image: url('https://avatars1.githubusercontent.com/u/9085100?s=400&amp;u=f790e317df4e24a19dd0a1c62cb4b9f2b53d3e70&amp;v=4');
 }
 
 .card-content {
@@ -198,4 +198,15 @@ body {
     background-color: #fff;
     color: black;
     border-radius: 20px;
+}
+
+.map {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 500px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
 }

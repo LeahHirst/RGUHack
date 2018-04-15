@@ -84,7 +84,7 @@ io.on('connection', function(socket){
 			 		} else {
 						wordFound = true;
 					}
-			});
+      });
 			if(obj.split(' ')[0]=='giphy') {
 				 giphy.search(search).then(function (res) {
 				 	msg = '<iframe src="' + res.data[0].embed_url + '" width="480" height="365" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
@@ -92,7 +92,12 @@ io.on('connection', function(socket){
 			    io.to(roomID).emit('final update', { string: msg, id: messageID[socket.id], user: users[socket.id], target: socket.id} );
 			    messageID[socket.id] = undefined;
 					waiting = false;
-				});
+        });
+      } else if(obj.toLowerCase().trim()=='show me the ships') {
+        // Ships
+        var roomID = Object.keys(socket.rooms)[1];
+        var ships = require('ais.js');
+        io.to(roomID).emit('show map', { ships: ships });
 			} else if(obj.split(' ')[0]=='YouTube') {
 				var opts = {
 				  maxResults: 10,

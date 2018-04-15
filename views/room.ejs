@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="css/style.css">
     <title>transcri.me | #<%= room %></title>
     
-
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
     <script type="text/javascript">
 
         var socket;
@@ -152,6 +153,7 @@
             var name = "<%= profile.name.givenName %>";
             var fullName = "<%= profile.displayName %>";
             var photo = "<%= profile.photos[0].value %>";
+            var mapN = 0;
 
             socket.emit('join room', { name: name, photo: photo, roomId: roomName, fullName: fullName })
 
@@ -230,6 +232,130 @@
                 }
  
                 el.scrollIntoView();
+            });
+
+            socket.on('show map', (data) => {
+                $('#output').append(`<div class="map" id='map-${mapN++}'></div>`);
+                mapboxgl.accessToken = 'pk.eyJ1IjoiYWhyZ3VoYWNrIiwiYSI6ImNqZzA4OGptNzBucWsyem54bWR2Mjd0cmcifQ.B88XcOovHjXGXH9ocy1mJg';
+                var map = new mapboxgl.Map({
+                    container: 'map-' + (mapN-1),
+                    style: 'mapbox://styles/mapbox/dark-v9',
+                    center: [-2.446, 57.75],
+                    zoom: 5
+                }) // 57.7500317,-2.4460594,7.24z
+
+                map.on('load', function() {
+                    var geojson = {
+                        "type": "FeatureCollection",
+                        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                        "features": [],
+                    }
+
+                    data.ships.forEach((ship) => {
+                        geojson.features.push({
+                            type: "Feature",
+                            properties: { "name": ship.Name, "mmsi": ship.MMSI },
+                            geometry: {
+                                type: "Point",
+                                coordinates: ship.lastPos.location
+                            }
+                        })
+                    });
+                    
+                    map.addSource('ships', {
+                        type: 'geojson',
+                        data: geojson,
+                    });
+
+                    map.addLayer({
+                        id: 'ships-heat',
+                        type: "heatmap",
+                        source: 'ships',
+                        "maxzoom": 9,
+                        "paint": {
+                            // Increase the heatmap color weight weight by zoom level
+                            // heatmap-intensity is a multiplier on top of heatmap-weight
+                            "heatmap-intensity": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                0, 1,
+                                9, 3
+                            ],
+                            // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+                            // Begin color ramp at 0-stop with a 0-transparancy color
+                            // to create a blur-like effect.
+                            "heatmap-color": [
+                                "interpolate",
+                                ["linear"],
+                                ["heatmap-density"],
+                                0, "rgb(47, 85, 104)",
+                                0.2, "rgb(53, 109, 137)",
+                                0.4, "rgb(55, 127, 163)",
+                                0.6, "rgb(52, 143, 188)",
+                                0.8, "rgb(47, 167, 226)",
+                                1, "rgb(9, 167, 244)"
+                            ],
+                            // Adjust the heatmap radius by zoom level
+                            "heatmap-radius": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                0, 2,
+                                9, 20
+                            ],
+                            // Transition from heatmap to circle layer by zoom level
+                            "heatmap-opacity": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                7, 1,
+                                9, 0
+                            ],
+                        }
+                    }, 'waterway-label');
+
+                    map.addLayer({
+                        "id": "ships-point",
+                        "type": "circle",
+                        "source": "ships",
+                        "minzoom": 7,
+                        "paint": {
+                            // Size circle radius by earthquake magnitude and zoom level
+                            "circle-radius": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                7, [
+                                    "interpolate",
+                                    ["linear"],
+                                    ["get", "mag"],
+                                    1, 1,
+                                    6, 4
+                                ],
+                                16, [
+                                    "interpolate",
+                                    ["linear"],
+                                    ["get", "mag"],
+                                    1, 5,
+                                    6, 50
+                                ]
+                            ],
+                            // Color circle by earthquake magnitude
+                            "circle-color": "white",
+                            "circle-stroke-color": "white",
+                            "circle-stroke-width": 1,
+                            // Transition from heatmap to circle layer by zoom level
+                            "circle-opacity": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                7, 0,
+                                8, 1
+                            ]
+                        }
+                    }, 'waterway-label');
+                })
             });
 
             socket.on('user joined', (data) => {
